@@ -25,11 +25,12 @@ public class LoginUserApplication {
 		password = getPassword();
 		
 		userString = readData();
+		
 		for(int i=0; i<userString.length; i++ ) {
 			String[] userArray = userString[i].split(",");
 				Persons[i] = userService.createUser(userArray[0], userArray[1], userArray[2]);
 		}
-		while (attemptsRemaining > 1 && validatedUser == false ) {
+		while (attemptsRemaining >= 1 && validatedUser == false ) {
 			validatedUser = checkUser(Persons, username, password);
 			if (validatedUser == false) {
 				attemptsRemaining--;
