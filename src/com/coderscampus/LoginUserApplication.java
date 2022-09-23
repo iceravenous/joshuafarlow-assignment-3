@@ -31,9 +31,10 @@ public class LoginUserApplication {
 				Persons[i] = userService.createUser(userArray[0], userArray[1], userArray[2]);
 		}
 		while (attemptsRemaining >= 1 && validatedUser == false ) {
+			attemptsRemaining--;
 			validatedUser = checkUser(Persons, username, password);
 			if (validatedUser == false) {
-				attemptsRemaining--;
+				
 				System.out.println("Invalid login, please try again.");
 				username = getUsername();
 				password = getPassword();
