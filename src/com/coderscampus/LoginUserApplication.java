@@ -15,7 +15,7 @@ public class LoginUserApplication {
 		String[] userString = new String[4];
 		UserService userService = new UserService();
 		int attemptsRemaining = 5;
-		boolean validatedUser = false;
+		String validatedUser = "";
 		
 		
 		User Persons[] = new User[4];
@@ -30,18 +30,23 @@ public class LoginUserApplication {
 			String[] userArray = userString[i].split(",");
 				Persons[i] = userService.createUser(userArray[0], userArray[1], userArray[2]);
 		}
-		while (attemptsRemaining >= 1 && validatedUser == false ) {
-			attemptsRemaining--;
+		while (attemptsRemaining >= 1) 
+		{
+			attemptsRemaining--;			
 			validatedUser = checkUser(Persons, username, password);
-			if (validatedUser == false) {
-				
+			if (attemptsRemaining <1 && validatedUser == "null") {
+				System.out.println("Too many failed login attempts, you are now locked out.");
+			} else if (validatedUser == "null") {
 				System.out.println("Invalid login, please try again.");
 				username = getUsername();
 				password = getPassword();
-			}
-		}
-		if (validatedUser == false) {
-			System.out.println("Too many failed login attempts, you are now locked out.");
+			} else {
+				System.out.println("Welcome:" + validatedUser);
+				attemptsRemaining--;
+			} 
+			
+				
+			 
 		}
 		
 
@@ -61,20 +66,21 @@ public class LoginUserApplication {
 		scan.close();
 	}
 	
-	private static boolean checkUser(User Persons[], String username, String password) {
-		boolean validatedUser = true;
+	private static String checkUser(User Persons[], String username, String password) {
+		String validatedUser = "";
 		for (int j=0; j<Persons.length; j++) {
 			if (Persons[j].getUsername().equalsIgnoreCase(username)){
-				validatedUser = true;
+				validatedUser = Persons[j].getName();
+				
 				if (Persons[j].getPassword().equals(password)) {
-					System.out.println("Welcome:" + Persons[j].getName());
+//					System.out.println("Welcome:" + Persons[j].getName());
 					return validatedUser;	
 				} else {
-					validatedUser = false;
+					validatedUser = "null";
 				}
 				
 			} else {
-				validatedUser = false;
+				validatedUser = "null";
 						}
 		}
 		return validatedUser;
