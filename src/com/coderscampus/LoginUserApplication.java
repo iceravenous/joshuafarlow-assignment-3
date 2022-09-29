@@ -11,11 +11,12 @@ public class LoginUserApplication {
 	static Scanner scan = new Scanner(System.in);
 	public static void main(String[] args) {
 		String username;
+		String name;
 		String password;
 		String[] userString = new String[4];
 		UserService userService = new UserService();
 		int attemptsRemaining = 5;
-		String validatedUser = "";
+		boolean validatedUser = false;
 		
 		
 		User Persons[] = new User[4];
@@ -30,57 +31,58 @@ public class LoginUserApplication {
 			String[] userArray = userString[i].split(",");
 				Persons[i] = userService.createUser(userArray[0], userArray[1], userArray[2]);
 		}
-		while (attemptsRemaining >= 1) 
-		{
-			attemptsRemaining--;			
-			validatedUser = checkUser(Persons, username, password);
-			if (attemptsRemaining <1 && validatedUser == "null") {
 				System.out.println("Too many failed login attempts, you are now locked out.");
-			} else if (validatedUser == "null") {
-				System.out.println("Invalid login, please try again.");
+		validatedUser = checkUser(Persons, username, password);
+		while (attemptsRemaining >1 && validatedUser == false) {
+			
+			if (validatedUser == true) {
+				name=getName(Persons, username);
+				System.out.println("Welcome, " + name);
+
+			} else if(attemptsRemaining >0){
+				System.out.println("Invalid username/password. Please try again.");
 				username = getUsername();
 				password = getPassword();
-			} else {
-				System.out.println("Welcome:" + validatedUser);
 				attemptsRemaining--;
-			} 
-			
-				
-			 
+				validatedUser = checkUser(Persons, username, password);
+				}
+			}
+
+		if (attemptsRemaining == 1 && validatedUser==false) {
+
+			System.out.println("Too many failed login attempts, you are now locked out.");
 		}
-		
+
 
 	
-/* TODO:
- *  1-create POJO <<<DONE>>>>
- *  
- *  2-load .CSV into array of strings <<<<DONE>>>>
- *  2b - convert array to objects using split <<<<<DONE>>>>>
- *  3-Collect username and password via scanner  <<<<DONE>>>>
- *  4 - match username (case insensitive) to .CSV information
- *  5 - match password (case sensitive) to .CSV information
- *  6. Display of there is no match, or if there is a match. Also lock user out after 5th invalid attempt. 
- * 
- */
 
 		scan.close();
 	}
 	
-	private static String checkUser(User Persons[], String username, String password) {
-		String validatedUser = "";
+	private static String getName(User Persons[], String username) {
+		String name="";
+		for(int k=0; k<Persons.length; k++) {
+			if (Persons[k].getUsername().equalsIgnoreCase(username)) {
+				name= Persons[k].getName();
+				}
+		}
+		return name;
+	}
+	
+	
+	private static boolean checkUser(User Persons[], String username, String password) {
+		boolean validatedUser = false;
 		for (int j=0; j<Persons.length; j++) {
 			if (Persons[j].getUsername().equalsIgnoreCase(username)){
-				validatedUser = Persons[j].getName();
-				
 				if (Persons[j].getPassword().equals(password)) {
-//					System.out.println("Welcome:" + Persons[j].getName());
-					return validatedUser;	
+					System.out.println("Welcome:" + Persons[j].getName());
+					return true;	
 				} else {
-					validatedUser = "null";
+					return false;
 				}
 				
 			} else {
-				validatedUser = "null";
+				validatedUser = false;
 						}
 		}
 		return validatedUser;
@@ -110,7 +112,7 @@ public class LoginUserApplication {
 			int counter = 0;
 			while ((line = fileReader.readLine()) != null) {
 				userString[counter] = line;
-				//System.out.println(userString[counter]);
+			
 				counter++;
 				}
 			} catch (FileNotFoundException e) {
