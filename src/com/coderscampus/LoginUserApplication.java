@@ -31,7 +31,6 @@ public class LoginUserApplication {
 			String[] userArray = userString[i].split(",");
 				Persons[i] = userService.createUser(userArray[0], userArray[1], userArray[2]);
 		}
-				System.out.println("Too many failed login attempts, you are now locked out.");
 		validatedUser = checkUser(Persons, username, password);
 		while (attemptsRemaining >1 && validatedUser == false) {
 			
